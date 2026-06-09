@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>쇼핑 최적화 플랫폼 - 홈</title>
+<style>
+:root { 
+    --primary: #2563eb; --primary-dark: #1d4ed8; --primary-light: #eff6ff; 
+    --danger: #dc2626; --danger-light: #fef2f2; --text-main: #1e293b; 
+    --text-muted: #64748b; --bg: #f8fafc; --card-bg: #ffffff; --border: #e2e8f0; 
+}
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Pretendard', -apple-system, sans-serif; }
+body { background-color: var(--bg); color: var(--text-main); display: flex; flex-direction: column; min-height: 100vh; }
+a { text-decoration: none; color: inherit; }
+
+/* 헤더 및 내비게이션 */
+header { background-color: var(--card-bg); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; }
+.header-container { max-width: 1200px; margin: 0 auto; padding: 1rem; display: flex; flex-direction: column; gap: 1rem; }
+.logo { font-size: 1.5rem; font-weight: 800; color: var(--primary); letter-spacing: -0.05em; }
+nav { display: flex; gap: 0.5rem; overflow-x: auto; padding-bottom: 0.25rem; }
+.nav-link { padding: 0.5rem 1rem; border-radius: 8px; font-size: 0.95rem; font-weight: 600; color: var(--text-muted); white-space: nowrap; transition: all 0.2s; }
+.nav-link:hover { color: var(--primary); background-color: var(--primary-light); }
+.nav-link.active { color: var(--card-bg); background-color: var(--primary); }
+
+@media (min-width: 768px) { .header-container { flex-direction: row; justify-content: space-between; align-items: center; } }
+
+/* 메인 레이아웃 및 카드 */
+main { flex: 1; max-width: 1200px; width: 100%; margin: 1.5rem auto; padding: 0 1rem; display: flex; flex-direction: column; gap: 1.5rem; }
+.page-title { font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem; }
+.page-desc { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 1rem; }
+.card { background-color: var(--card-bg); border-radius: 16px; border: 1px solid var(--border); padding: 1.5rem; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+
+/* 컨트롤 요소 */
+.flex-header { display: flex; align-items: center; justify-content: flex-start; gap: 1.5rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
+.card-title { font-size: 1.4rem; font-weight: 700; }
+.btn-action { background-color: var(--text-main); color: white; border: none; padding: 0.5rem 1rem; border-radius: 6px; font-weight: bold; cursor: pointer; transition: background 0.2s; }
+.btn-action:hover { opacity: 0.9; }
+.btn-primary { background-color: var(--primary); }
+.btn-delete { background-color: var(--danger-light); color: var(--danger); border: none; border-radius: 6px; padding: 0.6rem 1rem; font-weight: bold; cursor: pointer; transition: all 0.2s; white-space: nowrap; }
+.btn-delete:hover { background-color: var(--danger); color: white; }
+
+.add-form { display: none; gap: 0.5rem; margin-bottom: 1.5rem; flex-wrap: wrap; background-color: var(--bg); padding: 1rem; border-radius: 8px; border: 1px solid var(--border); }
+.add-form.active { display: flex; }
+.form-select { padding: 0.6rem; border: 1px solid var(--border); border-radius: 6px; flex: 1; min-width: 200px; font-size: 1rem; cursor: pointer; }
+
+/* 즐겨찾기 아이템 */
+.bookmark-list { display: flex; flex-direction: column; gap: 2rem; }
+.bookmark-item { display: flex; align-items: flex-start; gap: 1rem; }
+.bm-logo-box { border: 1px solid var(--border); border-radius: 8px; width: 100px; height: 50px; background-color: var(--card-bg); display: flex; align-items: center; justify-content: center; padding: 0.5rem; flex-shrink: 0; }
+.bm-logo-img { max-width: 100%; max-height: 100%; object-fit: contain; }
+
+.bm-url { border: 2px dashed var(--text-muted); border-radius: 8px; width: 1000px; height: 500px; cursor: pointer; transition: all 0.2s; background-color: var(--bg); flex-shrink: 0; overflow: hidden; display: flex; align-items: center; justify-content: center; position: relative; }
+.bm-url:hover { border-color: var(--primary); }
+.bm-url iframe { width: 100%; height: 100%; border: none; background-color: #ffffff; }
+.bm-placeholder { font-size: 0.9rem; color: var(--text-muted); font-weight: 600; text-align: center; pointer-events: none; }
+</style>
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <a href="index.html" class="logo">쇼핑 최적화 플랫폼</a>
+            <nav>
+                <a href="index.html" class="nav-link active">홈</a>
+                <a href="memo.html" class="nav-link">최적가 메모장</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <div>
+            <h1 class="page-title">안녕하세요</h1>
+            <p class="page-desc">홈 쇼핑 종합 사이트입니다.</p>
+        </div>
+
+        <section class="card">
+            <div class="flex-header">
+                <h2 class="card-title">홈 쇼핑 즐겨찾기</h2>
+                <button id="toggleFormBtn" class="btn-action">← 사이트 추가하기</button>
+            </div>
+
+            <div id="addSiteForm" class="add-form">
+                <select id="siteSelect" class="form-select"></select>
+                <button class="btn-action btn-primary" onclick="addBookmark()">선택 추가</button>
+            </div>
+
+            <div id="bookmarkList" class="bookmark-list"></div>
+        </section>
+    </main>
+
+  <script>
+    const allSites = [
+        { id: 'coupang', name: '쿠팡', url: 'https://www.coupang.com/', img: '사진/쿠팡.jpg' },
+        { id: 'naver', name: '네이버', url: 'https://shopping.naver.com/promotion', img: '사진/네이버.jpg' },
+        { id: '11st', name: '11번가', url: 'https://m.11st.co.kr/', img: '사진/11번가.jpg' },
+        { id: 'gmarket', name: 'G마켓', url: 'https://m.gmarket.co.kr/', img: '사진/G마켓.png' },
+        { id: 'cj', name: 'CJ더마켓', url: 'https://m.cjthemarket.com/', img: '사진/CJ.jpg' },
+        { id: 'ohouse', name: '오늘의집', url: 'https://ohou.se/', img: '사진/오늘의집.png' },
+        { id: 'idus', name: '아이디어스', url: 'https://www.idus.com/', img: '사진/아이디어스.jpg' }
+    ];
+
+    // 1. localStorage에서 기존 저장된 데이터 불러오기 (없으면 빈 배열)
+    let bookmarks = JSON.parse(localStorage.getItem('bookmarks')) || [];
+
+    // 브라우저에 현재 데이터 상태를 저장하는 함수
+    function saveBookmarks() {
+        localStorage.setItem('bookmarks', JSON.stringify(bookmarks));
+    }
+
+    function renderSelectOptions() {
+        const select = document.getElementById('siteSelect');
+        const optionsHtml = allSites
+            .filter(site => !bookmarks.some(bm => bm.id === site.id))
+            .map(site => `<option value="${site.id}">${site.name}</option>`)
+            .join('');
+        
+        select.innerHTML = '<option value="">추가할 플랫폼을 선택하세요</option>' + optionsHtml;
+    }
+
+    // 2. 개별 북마크 HTML 엘리먼트를 동적으로 생성하는 함수 (기존 iframe 유지용)
+    function createBookmarkElement(bm) {
+        const div = document.createElement('div');
+        div.className = 'bookmark-item';
+        div.setAttribute('data-id', bm.id); // 삭제 시 추적을 위한 데이터 속성 부여
+        div.innerHTML = `
+            <div class="bm-logo-box">
+                <img src="${bm.img}" alt="${bm.name}" class="bm-logo-img">
+            </div>
+            <div class="bm-url" onclick="loadInBox(this, '${bm.url}')">
+                <div class="bm-placeholder">클릭하여 내부에서 사이트 구동</div>
+            </div>
+            <button class="btn-delete" onclick="deleteBookmark('${bm.id}')">삭제</button>
+        `;
+        return div;
+    }
+
+    // 페이지 최초 로딩 시 저장되어 있던 북마크들을 한 번만 그려줌
+    function renderBookmarks() {
+        const listContainer = document.getElementById('bookmarkList');
+        listContainer.innerHTML = ''; // 초기화 후 순회 생성
+        
+        bookmarks.forEach(bm => {
+            listContainer.appendChild(createBookmarkElement(bm));
+        });
+
+        renderSelectOptions();
+    }
+
+    function loadInBox(element, url) {
+        if (!element.querySelector('iframe')) {
+            element.innerHTML = `<iframe src="${url}"></iframe>`;
+        }
+    }
+
+    document.getElementById('toggleFormBtn').addEventListener('click', () => {
+        document.getElementById('addSiteForm').classList.toggle('active');
+    });
+
+    function addBookmark() {
+        const selectedId = document.getElementById('siteSelect').value;
+        if (!selectedId) return alert('목록에서 플랫폼을 먼저 선택해주세요!');
+        
+        const siteToAdd = allSites.find(site => site.id === selectedId);
+        bookmarks.push(siteToAdd);
+        saveBookmarks(); // 로컬스토리지 저장
+        
+        // 중요: innerHTML 전체 리셋이 아니라 새로운 노드만 리스트 아래에 추가(append)함
+        // 이 덕분에 다른 형제 요소 안의 iframe 구동 상태가 깨지지 않고 유지됩니다.
+        const listContainer = document.getElementById('bookmarkList');
+        listContainer.appendChild(createBookmarkElement(siteToAdd));
+        
+        renderSelectOptions();
+        document.getElementById('addSiteForm').classList.remove('active');
+    }
+
+    function deleteBookmark(id) {
+        bookmarks = bookmarks.filter(bm => bm.id !== id);
+        saveBookmarks(); // 로컬스토리지 저장
+        
+        // 중요: 전체를 다시 그리지 않고 삭제 대상인 DOM 요소만 찝어서 지웁니다.
+        const itemToRemove = document.querySelector(`.bookmark-item[data-id="${id}"]`);
+        if (itemToRemove) {
+            itemToRemove.remove();
+        }
+        
+        renderSelectOptions();
+    }
+
+    window.onload = renderBookmarks;
+</script>
+</body>
+</html>
