@@ -40,15 +40,16 @@ main { flex: 1; max-width: 1200px; width: 100%; margin: 1.5rem auto; padding: 0 
 .form-input { padding: 0.8rem; border: 1px solid var(--border); border-radius: 6px; font-size: 0.95rem; }
 .input-name { flex: 2; min-width: 200px; }
 .input-num { flex: 1; min-width: 100px; }
-.btn-add { background-color: var(--text-main); color: white; border: none; padding: 0.8rem 1.5rem; border-radius: 6px; font-weight: bold; cursor: pointer; white-space: nowrap; transition: background-color 0.2s; }
+.btn-add { background-color: var(--text-main); color: white; border: none; padding: 0.8rem 1.5rem; border-radius: 6px; font-weight: bold; cursor: pointer; white-space: nowrap; transition: background-color 0.2s; flex: 1; min-width: 100px; }
 .btn-add:hover { background-color: #0f172a; }
 
 /* 삭제 버튼 추가 */
 .btn-delete-sm { background-color: var(--danger-light); color: var(--danger); border: none; border-radius: 4px; padding: 0.4rem 0.8rem; font-weight: bold; cursor: pointer; transition: all 0.2s; font-size: 0.85rem; }
 .btn-delete-sm:hover { background-color: var(--danger); color: white; }
 
-/* 테이블 */
-.cart-table { width: 100%; border-collapse: collapse; margin-bottom: 1.5rem; }
+/* 테이블 모바일 스크롤 컨테이너 추가 */
+.table-responsive { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; margin-bottom: 1.5rem; border: 1px solid var(--border); border-radius: 8px; }
+.cart-table { width: 100%; border-collapse: collapse; min-width: 600px; } /* 최소 너비를 확보하여 텍스트 깨짐 방지 */
 .cart-table th, .cart-table td { padding: 1rem; text-align: left; border-bottom: 1px solid var(--border); font-size: 0.95rem; vertical-align: middle; }
 .cart-table th { background-color: var(--bg); font-weight: 700; white-space: nowrap; }
 
@@ -62,7 +63,6 @@ main { flex: 1; max-width: 1200px; width: 100%; margin: 1.5rem auto; padding: 0 
 .title-coupang { color: var(--brand-coupang); }
 .title-naver { color: var(--brand-naver); }
 .title-11st { color: var(--brand-11st); }
-/* 👇 누락되었던 플랫폼 타이틀 색상 추가 */
 .title-Gmarket { color: var(--brand-Gmarket); }
 .title-CJ { color: var(--brand-CJ); }
 .title-home { color: var(--brand-home); }
@@ -80,7 +80,6 @@ main { flex: 1; max-width: 1200px; width: 100%; margin: 1.5rem auto; padding: 0 
 .btn-coupang { background-color: var(--brand-coupang); }
 .btn-naver { background-color: var(--brand-naver); }
 .btn-11st { background-color: var(--brand-11st); }
-/* 👇 누락되었던 플랫폼 버튼 배경색 추가 (밝은 배경은 글자색을 어둡게 처리) */
 .btn-Gmarket { background-color: var(--brand-Gmarket); color: var(--text-main); }
 .btn-CJ { background-color: var(--brand-CJ); }
 .btn-home { background-color: var(--brand-home); color: var(--text-main); }
@@ -130,24 +129,27 @@ main { flex: 1; max-width: 1200px; width: 100%; margin: 1.5rem auto; padding: 0 
                 <button class="btn-add" onclick="addItem()">추가하기</button>
             </div>
             
-            <table class="cart-table">
-                <thead>
-                    <tr>
-                        <th>상품 정보</th>
-                        <th>상품 가격</th>
-                        <th>배송비</th>
-                        <th>수량</th>
-                        <th>최종 가격</th>
-                        <th>관리</th> </tr>
-                </thead>
-                <tbody id="cart-tbody">
+            <div class="table-responsive">
+                <table class="cart-table">
+                    <thead>
+                        <tr>
+                            <th>상품 정보</th>
+                            <th>상품 가격</th>
+                            <th>배송비</th>
+                            <th>수량</th>
+                            <th>최종 가격</th>
+                            <th>관리</th> </tr>
+                    </thead>
+                    <tbody id="cart-tbody">
                     </tbody>
-            </table>
+                </table>
+            </div>
+
             <div style="text-align: right; margin-top: 1rem; padding: 1.5rem; background-color: var(--bg); border-radius: 8px; border: 1px solid var(--border);">
-                <span style="font-size: 0.95rem; color: var(--text-muted); margin-right: 1rem;">
+                <span style="font-size: 0.95rem; color: var(--text-muted); margin-right: 1rem; display: block; margin-bottom: 0.5rem;">
                     (상품 총액 + 플랫폼별 최대 배송비)
                 </span>
-                <strong style="font-size: 1.5rem; color: var(--text-main);">
+                <strong style="font-size: 1.4rem; color: var(--text-main);">
                     총 결제 금액: <span id="cart-grand-total" style="color: var(--primary);">0원</span>
                 </strong>
             </div>
@@ -159,26 +161,20 @@ main { flex: 1; max-width: 1200px; width: 100%; margin: 1.5rem auto; padding: 0 
     </main>
 
     <script>
-    // 고유 ID 생성을 위한 변수
     let itemIdCounter = 1;
-
-    // 1. localStorage에서 저장된 장바구니 데이터를 불러옵니다. (비어있으면 기본 세제 데이터 세팅)
     let cartItems = JSON.parse(localStorage.getItem('cartItems')) || [ ];
 
-    // 데이터가 이미 존재한다면 counter ID가 중복되지 않도록 가장 큰 ID값 다음 번호로 설정합니다.
     if (cartItems.length > 0) {
         itemIdCounter = Math.max(...cartItems.map(item => item.id)) + 1;
     }
 
-    // 데이터를 로컬스토리지에 동기화(저장)하는 함수
     function saveCart() {
         localStorage.setItem('cartItems', JSON.stringify(cartItems));
     }
 
-    // 2. 장바구니 테이블 그리기 함수 (데이터 기반 렌더링)
     function renderCart() {
         const tbody = document.getElementById('cart-tbody');
-        tbody.innerHTML = ''; // 테이블 내용 비우기
+        tbody.innerHTML = '';
 
         cartItems.forEach(item => {
             const itemRowTotalPrice = (item.price * item.quantity) + item.delivery;
@@ -203,19 +199,16 @@ main { flex: 1; max-width: 1200px; width: 100%; margin: 1.5rem auto; padding: 0 
             tbody.appendChild(newRow);
         });
 
-        // 합계 및 하단 카드 갱신
         calculateGrandTotal();
         renderPlatformSummaries();
     }
 
-    // 3. 아이템 삭제 함수
     function deleteItem(id) {
         cartItems = cartItems.filter(item => item.id !== id);
-        saveCart(); // 스토리지에 세이브
+        saveCart();
         renderCart();
     }
 
-    // 4. 아이템 추가 함수
     function addItem() {
         const mallSelect = document.getElementById('pMall');
         const nameInput = document.getElementById('pName');
@@ -234,7 +227,6 @@ main { flex: 1; max-width: 1200px; width: 100%; margin: 1.5rem auto; padding: 0 
         if (!mallImgSrc) return alert('쇼핑몰을 선택해주세요.');
         if (!name) return alert('상품명을 입력해주세요.');
 
-        // 데이터 배열에 새 아이템 객체 추가
         cartItems.push({
             id: itemIdCounter++, 
             mallId: mallImgSrc,
@@ -246,10 +238,9 @@ main { flex: 1; max-width: 1200px; width: 100%; margin: 1.5rem auto; padding: 0 
             delivery: delivery
         });
 
-        saveCart(); // 스토리지에 세이브
+        saveCart();
         renderCart();
 
-        // 입력 폼 초기화
         mallSelect.value = ''; 
         nameInput.value = '';
         priceInput.value = '';
@@ -258,7 +249,6 @@ main { flex: 1; max-width: 1200px; width: 100%; margin: 1.5rem auto; padding: 0 
         nameInput.focus();
     }
 
-    // 5. 총합 계산 로직
     function calculateGrandTotal() {
         let totalItemPrice = 0;
         let deliveryByMall = {}; 
@@ -283,7 +273,6 @@ main { flex: 1; max-width: 1200px; width: 100%; margin: 1.5rem auto; padding: 0 
         document.getElementById('cart-grand-total').innerText = grandTotal.toLocaleString() + '원';
     }
 
-    // 6. 플랫폼별 하단 요약 카드 동적 생성 로직
     function renderPlatformSummaries() {
         const gridContainer = document.getElementById('comparison-grid');
         gridContainer.innerHTML = ''; 
